@@ -1,139 +1,171 @@
-Название проекта: Управление серверами
-Этот проект представляет собой простое веб-приложение для управления серверами и виртуальными машинами (VM), а также отслеживания выделенных и используемых ресурсов, таких как CPU, RAM, SSD и HDD.
+![managment](https://github.com/user-attachments/assets/424808a6-3c2f-4209-973e-e0f6d268d3a8)
 
-Используемые технологии
-Python: Основной код приложения написан на Python с использованием фреймворка Flask.
-Gunicorn: Для запуска Flask-приложения в продакшене.
-MariaDB: В качестве базы данных для хранения информации о серверах и виртуальных машинах.
-HTML/CSS: Для структуры и стилизации интерфейса.
-Debian Packaging: В релизе доступен .deb установщик для систем на основе Debian.
-Зависимости
-Python 3.11+
-Flask
-Gunicorn
-pymysql
-MariaDB (или MySQL)
-pipx (для установки Gunicorn)
-python3-venv (для создания виртуального окружения)
-Функционал
-Управление серверами и виртуальными машинами: Добавление, редактирование и удаление серверов и виртуальных машин.
-Отслеживание использования ресурсов: Поддержка отображения и анализа использования CPU, RAM, SSD и HDD как на уровне серверов, так и на уровне виртуальных машин.
-Отмена удаления: Возможность отменить удаление серверов и виртуальных машин до их окончательного удаления.
-Как установить
-1. Установка через .deb пакет
-Релиз включает готовый .deb пакет для установки на системы на основе Debian. Для установки выполните команду:
+# PS: всё делалось, собиралось и выкладывалось при помощи ChatGPT 4o, сам я хз как это всё делать с нуля, но получилось то что хотел, делюсь со всеми, может пригодится
 
-bash
-Копировать код
+# Управление серверами
+
+Это проект для управления серверами и виртуальными машинами (VM), а также отслеживания выделенных и используемых ресурсов, таких как CPU, RAM, SSD и HDD.
+
+## Используемые технологии
+
+- **Python**: Основной язык программирования
+- **Flask**: Веб-фреймворк для создания интерфейсов
+- **Gunicorn**: WSGI сервер для продакшн запуска
+- **MariaDB**: Для хранения данных
+- **HTML/CSS**: Для фронтенда
+
+## Зависимости
+
+- Python 3.11+
+- Flask
+- Gunicorn
+- pymysql
+- MariaDB или MySQL
+- pipx
+- python3-venv
+
+## Установка
+
+### Установка через `.deb` пакет
+
+Используйте команду для установки пакета:
+
+```bash
 sudo apt install ./servers_managment.deb
-Это установит приложение, настроит необходимые зависимости и создаст систему для автозапуска сервиса через systemd.
+```
 
-2. Ручная установка
-Шаг 1: Клонирование проекта
-Сначала клонируйте репозиторий:
 
-bash
-Копировать код
+## Ручная установка
+
+Если вы хотите установить проект вручную, выполните следующие шаги:
+
+### Шаг 1: Клонирование репозитория
+
+Сначала клонируйте репозиторий проекта и перейдите в каталог проекта:
+
+```bash
 git clone https://github.com/ваш-репозиторий/servers-management.git
 cd servers-management
-Шаг 2: Создание виртуального окружения и установка зависимостей
-Создайте виртуальное окружение и установите все зависимости:
+```
 
-bash
-Копировать код
+### Шаг 2: Создание виртуального окружения и установка зависимостей
+
+Создайте виртуальное окружение Python и установите необходимые зависимости из файла `requirements.txt`:
+
+```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-Шаг 3: Настройка базы данных
-Для работы приложения необходимо настроить базу данных в MariaDB или MySQL.
+```
 
-Запустите MariaDB и создайте базу данных:
-bash
-Копировать код
-sudo service mariadb start
-mysql -u root -p
-Создайте базу данных и пользователя:
-sql
-Копировать код
-CREATE DATABASE SERVERMANAGER;
-CREATE USER 'SERVERMANAGER'@'localhost' IDENTIFIED BY 'SUPERPASSWORD';
-GRANT ALL PRIVILEGES ON SERVERMANAGER.* TO 'SERVERMANAGER'@'localhost';
-FLUSH PRIVILEGES;
-Создайте таблицы для серверов и виртуальных машин:
-sql
-Копировать код
-USE SERVERMANAGER;
+### Шаг 3: Настройка базы данных
 
-CREATE TABLE servers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255),
-    cpu INT,
-    ram INT,
-    ssd INT,
-    hdd INT,
-    deleted BOOLEAN DEFAULT FALSE
-);
+Для работы приложения необходимо создать базу данных и пользователя в MariaDB или MySQL:
 
-CREATE TABLE virtual_machines (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255),
-    cpu INT,
-    ram INT,
-    ssd INT,
-    hdd INT,
-    server_id INT,
-    deleted BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (server_id) REFERENCES servers(id)
-);
-Шаг 4: Настройка авторизации
-Откройте файл app.py и замените данные для подключения к базе данных в функции connect_db:
+1. Запустите MariaDB:
+   ```bash
+   sudo service mariadb start
+   ```
 
-python
-Копировать код
-def connect_db():
-    return pymysql.connect(
-        host='localhost',
-        user='SERVERMANAGER',
-        password='SUPERPASSWORD',
-        db='SERVERMANAGER',
-        cursorclass=pymysql.cursors.DictCursor
-    )
-Шаг 5: Запуск приложения
-Чтобы запустить приложение, выполните команду:
+2. Откройте MariaDB:
+   ```bash
+   sudo mysql -u root -p
+   ```
 
-bash
-Копировать код
-gunicorn --workers 3 --bind 0.0.0.0:80 app:app
-Теперь приложение доступно на порту 80.
+3. Создайте базу данных и пользователя:
+   ```sql
+   CREATE DATABASE SERVERMANAGER;
+   CREATE USER 'SERVERMANAGER'@'localhost' IDENTIFIED BY 'SUPERPASSWORD';
+   GRANT ALL PRIVILEGES ON SERVERMANAGER.* TO 'SERVERMANAGER'@'localhost';
+   FLUSH PRIVILEGES;
+   ```
 
-Ручной запуск сервиса
-Приложение поддерживает автоматический запуск с помощью systemd. Если вы не хотите использовать Nginx, приложение можно запускать прямо на порту 80 через Gunicorn.
+4. Создайте необходимые таблицы:
+   ```sql
+   USE SERVERMANAGER;
+   CREATE TABLE servers (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     name VARCHAR(255),
+     cpu INT,
+     ram INT,
+     ssd INT,
+     hdd INT,
+     deleted BOOLEAN DEFAULT FALSE
+   );
+   
+   CREATE TABLE virtual_machines (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     name VARCHAR(255),
+     cpu INT,
+     ram INT,
+     ssd INT,
+     hdd INT,
+     server_id INT,
+     deleted BOOLEAN DEFAULT FALSE,
+     pending_delete BOOLEAN DEFAULT FALSE,
+     FOREIGN KEY (server_id) REFERENCES servers(id)
+   );
+   ```
 
-Пример systemd-сервиса:
-Файл: /etc/systemd/system/servers.service:
+### Шаг 4: Настройка автозапуска (systemd)
 
-ini
-Копировать код
-[Unit]
-Description=Servers Management Service
-After=network.target
+Чтобы приложение запускалось автоматически при загрузке системы, создайте файл службы:
 
-[Service]
-User=root
-WorkingDirectory=/opt/servers
-ExecStart=/opt/servers/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:80 app:app
-Restart=always
+1. Создайте файл службы:
 
-[Install]
-WantedBy=multi-user.target
-После добавления конфигурации перезапустите systemd и активируйте сервис:
+   ```bash
+   sudo nano /etc/systemd/system/servers-managment.service
+   ```
 
-bash
-Копировать код
-sudo systemctl daemon-reload
-sudo systemctl enable servers.service
-sudo systemctl start servers.service
-Особенности
-Поддержка удаления серверов и виртуальных машин с возможностью отмены.
-Поддержка круглых диаграмм для отображения использования ресурсов.
-Легкая установка через .deb пакет.
+2. Вставьте в него следующее содержимое:
+
+   ```ini
+   [Unit]
+   Description=Flask Application for Server Management
+   After=network.target
+
+   [Service]
+   User=www-data
+   Group=www-data
+   WorkingDirectory=/opt/servers-managment
+   ExecStart=/opt/servers-managment/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:80 app:app
+   Restart=always
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+3. Перезагрузите systemctl, активируйте службу и запустите её:
+
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable servers-managment.service
+   sudo systemctl start servers-managment.service
+   ```
+
+Теперь ваше приложение будет автоматически запускаться при загрузке системы.
+
+## Зависимости
+
+- Flask
+- PyMySQL
+- Gunicorn
+- MariaDB
+
+## Использование deb-пакета
+
+В релизе проекта представлен deb-пакет для автоматической установки приложения и его зависимостей.
+
+### Установка deb-пакета:
+
+1. Установите пакет:
+   ```bash
+   sudo apt install ./servers-managment.deb
+   ```
+
+2. Во время установки автоматически:
+   - Установится MariaDB и создадутся необходимые таблицы.
+   - Будет настроена служба для автозапуска приложения.
+   - Установятся зависимости через pipx и будет создано виртуальное окружение.
+
+Если потребуется установить что-то вручную, воспользуйтесь инструкциями выше.
