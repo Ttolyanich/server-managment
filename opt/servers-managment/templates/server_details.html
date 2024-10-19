@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование сервера</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <a href="/admin" class="btn">Назад к админке</a>
+
+    <h1>Редактирование сервера: {{ server.name }}</h1>
+
+    <form action="/edit_server/{{ server.id }}" method="POST">
+        <div class="form-field">
+            Имя сервера: <input type="text" name="name" value="{{ server.name }}" required>
+        </div>
+        <div class="form-field">
+            CPU: <input type="text" name="cpu" value="{{ server.cpu }}" required>
+        </div>
+        <div class="form-field">
+            RAM: <input type="text" name="ram" value="{{ server.ram }}" required>
+        </div>
+        <div class="form-field">
+            SSD: <input type="text" name="ssd" value="{{ server.ssd }}" required>
+        </div>
+        <div class="form-field">
+            HDD: <input type="text" name="hdd" value="{{ server.hdd }}" required>
+        </div>
+        <div class="form-field">
+            <input type="submit" value="Сохранить изменения" class="btn">
+        </div>
+    </form>
+
+    <h2>Виртуальные машины</h2>
+    <table class="server-table">
+        <thead>
+            <tr>
+                <th>Имя ВМ</th>
+                <th>CPU</th>
+                <th>RAM</th>
+                <th>SSD</th>
+                <th>HDD</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vm in virtual_machines %}
+            <tr>
+                <td>{{ vm.name }}</td>
+                <td>{{ vm.cpu }}</td>
+                <td>{{ vm.ram }}</td>
+                <td>{{ vm.ssd }}</td>
+                <td>{{ vm.hdd }}</td>
+                <td class="actions">
+                    {% if vm.deleted %}
+                    <a href="/restore_vm/{{ vm.id }}" class="btn">Отменить удаление ВМ</a>
+                    {% elif vm.pending_delete %}
+                    <a href="/cancel_delete_vm/{{ vm.id }}" class="btn">Отменить</a>
+                    <a href="/permanent_delete_vm/{{ vm.id }}" class="btn btn-danger">Удалить навсегда</a>
+                    {% else %}
+                    <a href="/edit_vm/{{ vm.id }}" class="btn">Редактировать</a>
+                    <a href="/pending_delete_vm/{{ vm.id }}" class="btn btn-warning">Удалить</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Кнопка добавления новой виртуальной машины -->
+    <h2>Добавить новую виртуальную машину</h2>
+    <div class="add-vm-form">
+        <form action="/add_vm/{{ server.id }}" method="POST">
+            <input type="text" name="name" placeholder="Имя ВМ" required>
+            <input type="text" name="cpu" placeholder="CPU" required>
+            <input type="text" name="ram" placeholder="RAM" required>
+            <input type="text" name="ssd" placeholder="SSD" required>
+            <input type="text" name="hdd" placeholder="HDD" required>
+            <input type="submit" value="Добавить ВМ" class="btn">
+        </form>
+    </div>
+
+</body>
+</html>

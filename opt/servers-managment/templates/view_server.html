@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали сервера</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Находим все диаграммы
+        var charts = document.querySelectorAll('.chart-item');
+        
+        // Для каждой диаграммы добавляем обработчик события клика
+        charts.forEach(function(chart) {
+            chart.addEventListener('click', function() {
+                // Переключаем класс enlarged при каждом клике
+                this.classList.toggle('enlarged');
+            });
+        });
+    });
+</script>
+
+</head>
+<body>
+
+    <a href="/" class="btn">Назад к серверам</a>
+
+    <div class="server-info-container">
+	<div class="server-info">
+	    <h1>Сервер: {{ server.name }}</h1>
+	    <p>CPU: {{ server.cpu or 0 }}</p>
+	    <p>RAM: {{ server.ram or 0 }}</p>
+	    <p>SSD: {{ server.ssd or 0 }}</p>
+	    <p>HDD: {{ server.hdd or 0 }}</p>
+	</div>
+    </div>
+
+    <h2>Диаграммы использования ресурсов</h2>
+    <div class="chart-container">
+        <div class="chart-item">
+            <h3>CPU</h3> <!-- Заголовок диаграммы CPU -->
+            <canvas id="cpuChart"></canvas>
+        </div>
+        <div class="chart-item">
+            <h3>RAM</h3> <!-- Заголовок диаграммы RAM -->
+            <canvas id="ramChart"></canvas>
+        </div>
+        <div class="chart-item">
+            <h3>SSD</h3> <!-- Заголовок диаграммы SSD -->
+            <canvas id="ssdChart"></canvas>
+        </div>
+        <div class="chart-item">
+            <h3>HDD</h3> <!-- Заголовок диаграммы HDD -->
+            <canvas id="hddChart"></canvas>
+        </div>
+    </div>
+    
+    <h2>Виртуальные машины</h2>
+    
+    <table class="server-table">
+        <thead>
+        	<tr>
+        	    <th>Имя ВМ</th>
+        	    <th>CPU</th>
+        	    <th>RAM</th>
+        	    <th>SSD</th>
+        	    <th>HDD</th>
+        	</tr>
+        </thead>
+        <tbody>
+            {% for vm in virtual_machines %}
+        	<tr>
+            	<td>{{ vm.name }}</td>
+            	<td>{{ vm.cpu }}</td>
+            	<td>{{ vm.ram }}</td>
+            	<td>{{ vm.ssd }}</td>
+            	<td>{{ vm.hdd }}</td>
+            	</tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="highlight-row">
+                <td><strong>Остаток свободных ресурсов</strong></td>
+                <td>{{ free_cpu }}</td>
+                <td>{{ free_ram }}</td>
+                <td>{{ free_ssd }}</td>
+                <td>{{ free_hdd }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        var cpuCtx = document.getElementById('cpuChart').getContext('2d');
+        var ramCtx = document.getElementById('ramChart').getContext('2d');
+        var ssdCtx = document.getElementById('ssdChart').getContext('2d');
+        var hddCtx = document.getElementById('hddChart').getContext('2d');
+
+        function calculatePercentage(used, total) {
+            return total > 0 ? ((used / total) * 100).toFixed(2) : 0;
+        }
+
+        var vmNames = [{% for vm in virtual_machines %}'{{ vm.name }}',{% endfor %}'Свободно'];
+        var cpuUsage = [{% for vm in virtual_machines %}{{ vm.cpu }},{% endfor %}{{ (server.cpu or 0) - (used_resources.used_cpu or 0) }}];
+        var ramUsage = [{% for vm in virtual_machines %}{{ vm.ram }},{% endfor %}{{ (server.ram or 0) - (used_resources.used_ram or 0) }}];
+        var ssdUsage = [{% for vm in virtual_machines %}{{ vm.ssd }},{% endfor %}{{ (server.ssd or 0) - (used_resources.used_ssd or 0) }}];
+        var hddUsage = [{% for vm in virtual_machines %}{{ vm.hdd }},{% endfor %}{{ (server.hdd or 0) - (used_resources.used_hdd or 0) }}];
+
+        function createChart(ctx, data, total, title) {
+            return new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: vmNames,
+                    datasets: [{
+                        data: data.map(function(value) { return calculatePercentage(value, total); }),
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false  // Отключаем легенду
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    var label = tooltipItem.label || '';
+                                    var value = tooltipItem.raw || 0;
+                                    return label + ': ' + value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        createChart(cpuCtx, cpuUsage, {{ server.cpu or 0 }}, 'Использование CPU');
+        createChart(ramCtx, ramUsage, {{ server.ram or 0 }}, 'Использование RAM');
+        createChart(ssdCtx, ssdUsage, {{ server.ssd or 0 }}, 'Использование SSD');
+        createChart(hddCtx, hddUsage, {{ server.hdd or 0 }}, 'Использование HDD');
+    </script>
+</body>
+</html>

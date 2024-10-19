@@ -1,0 +1,260 @@
+/* Общие стили для страницы */
+body {
+    background-color: #222;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Контейнер для информации о сервере */
+.server-info-container {
+    display: flex;
+    justify-content: center; /* Центрирует содержимое по горизонтали */
+    align-items: center; /* Центрирует содержимое по вертикали, если нужно */
+    flex-direction: column; /* Размещает элементы друг под другом */
+    margin-bottom: 20px; /* Отступ снизу, чтобы отделить от других элементов */
+}
+
+/* Стиль для текста внутри контейнера */
+.server-info {
+    text-align: center; /* Центрирует текст внутри контейнера */
+    font-size: 18px; /* Размер шрифта */
+}
+
+.server-info h1 {
+    font-size: 24px; /* Устанавливаем размер заголовка сервера */
+    margin-bottom: 10px; /* Отступ снизу заголовка */
+    color: #00ffff; /* Цвет текста */
+}
+
+.server-info p {
+    margin: 5px 0; /* Отступы между параметрами сервера */
+}
+
+h1, h2 {
+    margin-top: 20px; /* Добавляем отступ сверху, чтобы текст не накладывался на диаграммы */
+    margin-bottom: 20px; /* Добавляем отступ снизу для отделения от таблицы */
+    text-align: center;
+    color: #00ffff;
+}
+
+p {
+    text-align: left;
+    padding-left: 20px;
+    font-size: 18px;
+}
+
+/* Поля ввода для характеристик сервера и ВМ */
+.form-field input {
+    width: 200px; /* Компактные поля ввода */
+    padding: 8px; /* Ровные отступы */
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Контейнер для таблицы */
+.table-container {
+    display: flex;
+    justify-content: center; /* Центрируем таблицу по горизонтали */
+    margin: 20px 0; /* Добавляем отступы сверху и снизу */
+}
+
+/* Контейнер для таблицы */
+.table-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0; /* Добавляем отступы сверху и снизу */
+}
+
+/* Таблица серверов */
+.server-table {
+    width: 80%;
+    max-width: 1000px;
+    border-collapse: collapse;
+    margin: 0 auto;
+    margin-top: 20px; /* Добавляем отступ сверху */
+}
+
+.server-table th, .server-table td {
+    padding: 5px 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.server-table th {
+    background-color: #222;
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.server-table td {
+    background-color: #333;
+    color: #fff;
+}
+
+.server-table tr:hover {
+    background-color: #444;
+}
+
+/* Кнопки действий */
+.btn {
+    display: inline-block;
+    background-color: #00ffff;
+    color: #000;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px; /* Добавляем отступ сверху */
+    margin-bottom: 20px; /* Добавляем отступ снизу */
+    font-size: 16px;
+}
+
+.btn-danger {
+    background-color: #ff4d4d;
+}
+
+.btn:hover {
+    background-color: #008CBA;
+}
+
+.btn-danger:hover {
+    background-color: #ff1a1a;
+}
+
+/* Кнопки перемещения */
+.move-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.move-buttons button {
+    margin: 0 5px;
+    padding: 5px;
+    background-color: #00CFFF;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.move-buttons button:hover {
+    background-color: #008CBA;
+}
+
+/* Добавление новой ВМ */
+.add-vm-form {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.add-vm-form input {
+    display: inline-block;
+    width: 180px;
+    margin: 5px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Стили для формы */
+form {
+    margin: 20px auto;
+    text-align: center;
+}
+
+/* Таблицы */
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+/* Кнопки действий */
+button, .btn {
+    background-color: #00CFFF;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+button:hover, .btn:hover {
+    background-color: #008CBA;
+}
+
+.btn-danger {
+    background-color: #ff4d4d;
+}
+
+.btn-danger:hover {
+    background-color: #ff1a1a;
+}
+
+/* Контейнер для диаграмм */
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px; /* Добавляем отступ сверху */
+    margin-bottom: 40px; /* Увеличиваем отступ снизу для пространства между диаграммами и текстом */
+}
+
+/* Элементы диаграмм */
+.chart-item {
+    width: 200px;
+    height: 200px;
+    margin: 20px;
+    text-align: center;
+    transition: transform 0.3s ease; /* Плавный переход для увеличения */
+}
+
+/* Увеличенная диаграмма */
+.chart-item.enlarged {
+    transform: scale(2); /* Увеличение диаграммы в 2 раза */
+}
+
+canvas {
+    width: 200px !important; /* Фиксированная ширина для канвасов */
+    height: 200px !important; /* Фиксированная высота для канвасов, чтобы оставались круглыми */
+    max-width: 100% !important; /* Устанавливаем максимальную ширину для адаптивности */
+    max-height: 100% !important; /* Устанавливаем максимальную высоту для адаптивности */
+}
+
+
+/* Убираем подчеркивание с текста на кнопках */
+.btn, .btn a {
+    text-decoration: none;
+    color: white;
+}
+
+.btn:hover, .btn a:hover {
+    text-decoration: none;
+}
+
+/* Контейнер для кнопки */
+.btn-container {
+    margin-bottom: 20px; /* Отступ снизу для разделения с остальным контентом */
+}
+
+/* Стиль для последней строки таблицы */
+.highlight-row {
+    background-color: #333; /* Фон для выделения строки */
+    color: #00ffff; /* Цвет текста */
+    font-weight: bold; /* Жирный текст */
+}
+
+.highlight-row td {
+    padding: 10px; /* Отступы для ячеек строки */
+    border-top: 2px solid #00ffff; /* Верхняя граница строки */
+}

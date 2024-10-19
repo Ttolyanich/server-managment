@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список серверов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Просмотр серверов</h1>
+    <table class="server-table">
+        <thead>
+            <tr>
+                <th>Имя сервера</th>
+                <th>CPU</th>
+                <th>RAM</th>
+                <th>SSD</th>
+                <th>HDD</th>
+                <th>Просмотр</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for server in servers %}
+            <tr>
+                <td>{{ server.name }}</td>
+                <td>{{ server.cpu }}</td>
+                <td>{{ server.ram }}</td>
+                <td>{{ server.ssd }}</td>
+                <td>{{ server.hdd }}</td>
+                <td>
+                    <a href="/view_server/{{ server.id }}" class="btn">Просмотреть</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

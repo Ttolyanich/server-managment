@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление серверами</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Список серверов</h1>
+    <table class="server-table">
+        <thead>
+            <tr>
+                <th>Имя сервера</th>
+                <th>CPU</th>
+                <th>RAM</th>
+                <th>SSD</th>
+                <th>HDD</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for server in servers %}
+            <tr>
+                <td>{{ server.name }}</td>
+                <td>{{ server.cpu }}</td>
+                <td>{{ server.ram }}</td>
+                <td>{{ server.ssd }}</td>
+                <td>{{ server.hdd }}</td>
+                <td class="actions">
+                    {% if server.deleted %}
+                    <a href="/restore_server/{{ server.id }}" class="btn">Отменить удаление</a>
+		    <a href="/permanent_delete_server/{{ server.id }}" class="btn btn-danger">Удалить навсегда</a>
+                    {% else %}
+                    <a href="/edit_server/{{ server.id }}" class="btn">Редактировать</a>
+                    <a href="/delete_server/{{ server.id }}" class="btn btn-danger">Удалить</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Добавить новый сервер</h2>
+    <div class="add-server-form">
+        <form action="/add_server" method="POST">
+            <div class="form-field">
+                Имя сервера: <input type="text" name="name" required>
+            </div>
+            <div class="form-field">
+                CPU: <input type="text" name="cpu" required>
+            </div>
+            <div class="form-field">
+                RAM: <input type="text" name="ram" required>
+            </div>
+            <div class="form-field">
+                SSD: <input type="text" name="ssd" required>
+            </div>
+            <div class="form-field">
+                HDD: <input type="text" name="hdd" required>
+            </div>
+            <div class="form-field">
+                <input type="submit" value="Добавить сервер">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
