@@ -48,17 +48,7 @@ git clone https://github.com/ваш-репозиторий/servers-management.gi
 cd servers-management
 ```
 
-### Шаг 2: Создание виртуального окружения и установка зависимостей
-
-Создайте виртуальное окружение Python и установите необходимые зависимости из файла `requirements.txt`:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### Шаг 3: Настройка базы данных
+### Шаг 2: Настройка базы данных
 
 Для работы приложения необходимо создать базу данных и пользователя в MariaDB или MySQL:
 
@@ -107,7 +97,7 @@ pip install -r requirements.txt
    );
    ```
 
-### Шаг 4: Настройка автозапуска (systemd)
+### Шаг 3: Настройка автозапуска (systemd)
 
 Чтобы приложение запускалось автоматически при загрузке системы, создайте файл службы:
 
@@ -125,8 +115,7 @@ pip install -r requirements.txt
    After=network.target
 
    [Service]
-   User=www-data
-   Group=www-data
+   User=root
    WorkingDirectory=/opt/servers-managment
    ExecStart=/opt/servers-managment/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:80 app:app
    Restart=always
