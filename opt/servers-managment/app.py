@@ -19,11 +19,51 @@ def index():
     conn = connect_db()
     cur = conn.cursor()
 
+    # Получаем список серверов
     cur.execute("SELECT * FROM servers WHERE deleted = FALSE")
     servers = cur.fetchall()
 
+    servers_with_resources = []
+    
+    # Для каждого сервера вычисляем использованные ресурсы
+    for server in servers:
+        server_id = server['id']
+
+        # Получаем виртуальные машины для сервера
+        cur.execute("SELECT * FROM virtual_machines WHERE server_id = %s AND deleted = FALSE", (server_id,))
+        virtual_machines = cur.fetchall()
+
+        # Считаем использованные ресурсы
+        used_cpu = sum([vm['cpu'] for vm in virtual_machines])
+        used_ram = sum([vm['ram'] for vm in virtual_machines])
+        used_ssd = sum([vm['ssd'] for vm in virtual_machines])
+        used_hdd = sum([vm['hdd'] for vm in virtual_machines])
+
+        # Свободные ресурсы
+        free_cpu = server['cpu'] - used_cpu
+        free_ram = server['ram'] - used_ram
+        free_ssd = server['ssd'] - used_ssd
+        free_hdd = server['hdd'] - used_hdd
+
+        servers_with_resources.append({
+            'server': server,
+            'used_resources': {
+                'used_cpu': used_cpu,
+                'used_ram': used_ram,
+                'used_ssd': used_ssd,
+                'used_hdd': used_hdd
+            },
+            'free_resources': {
+                'free_cpu': free_cpu,
+                'free_ram': free_ram,
+                'free_ssd': free_ssd,
+                'free_hdd': free_hdd
+            }
+        })
+
     conn.close()
-    return render_template('index.html', servers=servers)
+
+    return render_template('index.html', servers=servers_with_resources)
 
 # Страница администрирования серверов
 @app.route('/admin')
