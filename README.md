@@ -36,20 +36,20 @@ cd servers-management
 
 ### Шаг 2: Установка пакетов и настройка
 
-   ```bash
-   sudo apt update && sudo apt upgrade -y
-   sudo apt install python3 python3-venv python3-pip gunicorn nginx -y
-   ```
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install python3 python3-venv python3-pip gunicorn nginx -y
+```
 Создание и активация виртуального окружения:
-   ```bash
-   python3 -m venv /opt/servers-managment/venv
-   source /opt/servers-managment/venv/bin/activate
-   pip install --break-system-packages flask gunicorn
-   ```
+```bash
+python3 -m venv /opt/servers-managment/venv
+source /opt/servers-managment/venv/bin/activate
+pip install --break-system-packages flask gunicorn
+```
 Установка Flask и Gunicorn:
-   ```bash
-   pip install flask gunicorn
-   ```
+```bash
+pip install flask gunicorn
+```
 
 ### Шаг 3: Настройка автозапуска (systemd)
 
@@ -57,34 +57,34 @@ cd servers-management
 
 1. Создайте файл службы:
 
-   ```bash
-   sudo nano /etc/systemd/system/servers-managment.service
-   ```
+```bash
+sudo nano /etc/systemd/system/servers-managment.service
+```
 
 2. Вставьте в него следующее содержимое:
 
-   ```ini
-   [Unit]
-   Description=Gunicorn instance to serve Flask App
-   After=network.target
+```ini
+[Unit]
+Description=Gunicorn instance to serve Flask App
+After=network.target
 
-   [Service]
-   User=root
-   Group=root
-   WorkingDirectory=/opt/servers-managment
-   ExecStart=/opt/servers-managment/venv/bin/gunicorn -w 4 -b 0.0.0.0:5000 app:app
+[Service]
+User=root
+Group=root
+WorkingDirectory=/opt/servers-managment
+ExecStart=/opt/servers-managment/venv/bin/gunicorn -w 4 -b 0.0.0.0:5000 app:app
 
-   [Install]
-   WantedBy=multi-user.target
-   ```
+[Install]
+WantedBy=multi-user.target
+```
 
 3. Перезагрузите systemctl, активируйте службу и запустите её:
 
-   ```bash
-   sudo systemctl daemon-reload
-   sudo systemctl enable servers-managment.service
-   sudo systemctl start servers-managment.service
-   ```
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable servers-managment.service
+sudo systemctl start servers-managment.service
+```
 
 Теперь ваше приложение будет автоматически запускаться при загрузке системы.
 
