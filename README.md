@@ -42,8 +42,9 @@ cd servers-management
    ```
 Создание и активация виртуального окружения:
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+   python3 -m venv /opt/servers-managment/venv
+   source /opt/servers-managment/venv/bin/activate
+   pip install --break-system-packages flask gunicorn
    ```
 Установка Flask и Gunicorn:
    ```bash
