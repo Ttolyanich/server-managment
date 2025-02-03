@@ -30,7 +30,7 @@
 
 ```bash
 cd /opt
-git clone https://github.com/Ttolyanich/server-managment.git
+git clone https://github.com/Ttolyanich/servers-managment.git
 cd servers-management
 ```
 
