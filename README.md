@@ -12,7 +12,6 @@
 - **Python**: Основной язык программирования
 - **Flask**: Веб-фреймворк для создания интерфейсов
 - **Gunicorn**: WSGI сервер для продакшн запуска
-- **MariaDB**: Для хранения данных
 - **HTML/CSS**: Для фронтенда
 
 ## Зависимости
@@ -20,82 +19,35 @@
 - Python 3.11+
 - Flask
 - Gunicorn
-- pymysql
-- MariaDB или MySQL
 - pipx
 - python3-venv
 
 ## Установка
-
-### Установка через `.deb` пакет
-
-Используйте команду для установки пакета:
-
-```bash
-sudo apt install ./servers_managment.deb
-```
-
-
-## Ручная установка
-
-Если вы хотите установить проект вручную, выполните следующие шаги:
 
 ### Шаг 1: Клонирование репозитория
 
 Сначала клонируйте репозиторий проекта и перейдите в каталог проекта:
 
 ```bash
-git clone https://github.com/ваш-репозиторий/servers-management.git
+cd /opt
+git clone https://github.com/Ttolyanich/servers-management.git
 cd servers-management
 ```
 
-### Шаг 2: Настройка базы данных
+### Шаг 2: Установка пакетов и настройка
 
-Для работы приложения необходимо создать базу данных и пользователя в MariaDB или MySQL:
-
-1. Запустите MariaDB:
    ```bash
-   sudo service mariadb start
+   sudo apt update && sudo apt upgrade -y
+   sudo apt install python3 python3-venv python3-pip gunicorn nginx -y
    ```
-
-2. Откройте MariaDB:
+Создание и активация виртуального окружения:
    ```bash
-   sudo mysql -u root -p
+   python3 -m venv venv
+   source venv/bin/activate
    ```
-
-3. Создайте базу данных и пользователя:
-   ```sql
-   CREATE DATABASE SERVERMANAGER;
-   CREATE USER 'SERVERMANAGER'@'localhost' IDENTIFIED BY 'SUPERPASSWORD';
-   GRANT ALL PRIVILEGES ON SERVERMANAGER.* TO 'SERVERMANAGER'@'localhost';
-   FLUSH PRIVILEGES;
-   ```
-
-4. Создайте необходимые таблицы:
-   ```sql
-   USE SERVERMANAGER;
-   CREATE TABLE servers (
-     id INT AUTO_INCREMENT PRIMARY KEY,
-     name VARCHAR(255),
-     cpu INT,
-     ram INT,
-     ssd INT,
-     hdd INT,
-     deleted BOOLEAN DEFAULT FALSE
-   );
-   
-   CREATE TABLE virtual_machines (
-     id INT AUTO_INCREMENT PRIMARY KEY,
-     name VARCHAR(255),
-     cpu INT,
-     ram INT,
-     ssd INT,
-     hdd INT,
-     server_id INT,
-     deleted BOOLEAN DEFAULT FALSE,
-     pending_delete BOOLEAN DEFAULT FALSE,
-     FOREIGN KEY (server_id) REFERENCES servers(id)
-   );
+Установка Flask и Gunicorn:
+   ```bash
+   pip install flask gunicorn
    ```
 
 ### Шаг 3: Настройка автозапуска (systemd)
@@ -112,14 +64,14 @@ cd servers-management
 
    ```ini
    [Unit]
-   Description=Flask Application for Server Management
+   Description=Gunicorn instance to serve Flask App
    After=network.target
 
    [Service]
    User=root
+   Group=root
    WorkingDirectory=/opt/servers-managment
-   ExecStart=/opt/servers-managment/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:80 app:app
-   Restart=always
+   ExecStart=/opt/servers-managment/venv/bin/gunicorn -w 4 -b 0.0.0.0:5000 app:app
 
    [Install]
    WantedBy=multi-user.target
@@ -135,27 +87,31 @@ cd servers-management
 
 Теперь ваше приложение будет автоматически запускаться при загрузке системы.
 
+Настройка Nginx для проксирования:
+```bash
+sudo nano /etc/nginx/sites-enabled/servers-managment
+```
+
+```bash
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
+Перезапустить NGINX
+```bash
+systemctl restart nginx
+```
+
 ## Зависимости
 
+- Python3
 - Flask
-- PyMySQL
 - Gunicorn
-- MariaDB
-
-## Использование deb-пакета
-
-В релизе проекта представлен deb-пакет для автоматической установки приложения и его зависимостей.
-
-### Установка deb-пакета:
-
-1. Установите пакет:
-   ```bash
-   sudo apt install ./servers-managment.deb
-   ```
-
-2. Во время установки автоматически:
-   - Установится MariaDB и создадутся необходимые таблицы.
-   - Будет настроена служба для автозапуска приложения.
-   - Установятся зависимости через pipx и будет создано виртуальное окружение.
-
-Если потребуется установить что-то вручную, воспользуйтесь инструкциями выше.
