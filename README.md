@@ -31,7 +31,7 @@
 ```bash
 cd /opt
 git clone https://github.com/Ttolyanich/servers-managment.git
-cd servers-management
+cd /opt/servers-managment/
 ```
 
 ### Шаг 2: Установка пакетов и настройка
