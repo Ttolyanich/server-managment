@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование Виртуальной Машины</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Кнопка для возврата к серверу -->
+    <a href="/edit_server/{{ server_id }}" class="btn">Назад к серверу</a>
+
+    <h1>Редактирование Виртуальной Машины: {{ vm.name }}</h1>
+
+    <form action="/edit_vm/{{ vm.id }}" method="POST">
+        <div class="form-field">
+            Имя ВМ: <input type="text" name="name" value="{{ vm.name }}" required>
+        </div>
+        <div class="form-field">
+            CPU: <input type="text" name="cpu" value="{{ vm.cpu }}" required>
+        </div>
+        <div class="form-field">
+            RAM: <input type="text" name="ram" value="{{ vm.ram }}" required>
+        </div>
+        <div class="form-field">
+            SSD: <input type="text" name="ssd" value="{{ vm.ssd }}" required>
+        </div>
+        <div class="form-field">
+            HDD: <input type="text" name="hdd" value="{{ vm.hdd }}" required>
+        </div>
+        <div class="form-field">
+            <input type="submit" value="Сохранить изменения" class="btn">
+        </div>
+    </form>
+
+</body>
+</html>

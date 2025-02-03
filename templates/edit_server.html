@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать сервер</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="btn-container">
+        <a href="/" class="btn">Назад</a> <!-- Перемещаем кнопку в контейнер -->
+    </div>
+
+    <h1>Редактировать сервер: {{ server.name }}</h1>
+
+    <div class="add-server-form">
+        <form action="/edit_server/{{ server.id }}" method="POST">
+            <div class="form-field">
+                Имя сервера: <input type="text" name="name" value="{{ server.name }}" required>
+            </div>
+            <div class="form-field">
+                CPU: <input type="text" name="cpu" value="{{ server.cpu }}" required>
+            </div>
+            <div class="form-field">
+                RAM: <input type="text" name="ram" value="{{ server.ram }}" required>
+            </div>
+            <div class="form-field">
+                SSD: <input type="text" name="ssd" value="{{ server.ssd }}" required>
+            </div>
+            <div class="form-field">
+                HDD: <input type="text" name="hdd" value="{{ server.hdd }}" required>
+            </div>
+            <div class="form-field">
+                <input type="submit" value="Сохранить">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
