@@ -65,7 +65,7 @@ sudo nano /etc/systemd/system/servers-managment.service
 
 ```ini
 [Unit]
-Description=Gunicorn instance to serve Flask App
+Description=Server Managment
 After=network.target
 
 [Service]
